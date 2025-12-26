@@ -1,6 +1,7 @@
 async function fetchJSON(url, options) {
   const res = await fetch(url, options);
   if (!res.ok) throw new Error(await res.text());
+  if (res.status === 204) return null;
   return res.json();
 }
 
@@ -10,7 +11,16 @@ async function loadNotes() {
   const notes = await fetchJSON('/notes/');
   for (const n of notes) {
     const li = document.createElement('li');
-    li.textContent = `${n.title}: ${n.content}`;
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.value = n.id;
+
+    const text = document.createElement('span');
+    text.textContent = `${n.title}: ${n.content}`;
+
+    li.appendChild(checkbox);
+    li.append(' ');
+    li.appendChild(text);
     list.appendChild(li);
   }
 }
@@ -46,6 +56,19 @@ window.addEventListener('DOMContentLoaded', () => {
       body: JSON.stringify({ title, content }),
     });
     e.target.reset();
+    loadNotes();
+  });
+
+  document.getElementById('note-delete').addEventListener('click', async () => {
+    const selected = Array.from(
+      document.querySelectorAll('#notes input[type="checkbox"]:checked'),
+    );
+    if (selected.length === 0) return;
+    await Promise.all(
+      selected.map((checkbox) =>
+        fetchJSON(`/notes/${checkbox.value}`, { method: 'DELETE' }),
+      ),
+    );
     loadNotes();
   });
 

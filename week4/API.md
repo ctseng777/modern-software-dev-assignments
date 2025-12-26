@@ -1,107 +1,124 @@
 # API
 
-Base: OpenAPI 3.0.3
+Base: OpenAPI 3.1.0
 Title: Modern Software Dev Starter (Week 4)
-Version: 1.0.0
+Version: 0.1.0
 
 ## Endpoints
 
 ### GET /
-Serve frontend.
-
-Response 200
-- Content-Type: text/html
-- Body: string (HTML)
-
-### GET /notes/
-List notes.
-
-Response 200
-- Content-Type: application/json
-- Body: array of NoteRead
-
-### POST /notes/
-Create note.
-
-Request body (required)
-- Content-Type: application/json
-- Schema: NoteCreate
-
-Response 201
-- Content-Type: application/json
-- Body: NoteRead
-
-### GET /notes/search/
-Search notes.
-
-Query parameters
-- q (string, optional): search query
-
-Response 200
-- Content-Type: application/json
-- Body: array of NoteRead
-
-### GET /notes/{note_id}
-Get note.
-
-Path parameters
-- note_id (integer, required)
+Root
 
 Responses
-- 200: NoteRead
-- 404: HTTPError
+- 200 (application/json): object
+
 
 ### GET /action-items/
-List action items.
+List Items
 
-Response 200
-- Content-Type: application/json
-- Body: array of ActionItemRead
+Responses
+- 200 (application/json): array of ActionItemRead
+
 
 ### POST /action-items/
-Create action item.
+Create Item
 
-Request body (required)
+Request body
+- Required
 - Content-Type: application/json
 - Schema: ActionItemCreate
 
-Response 201
-- Content-Type: application/json
-- Body: ActionItemRead
+Responses
+- 201 (application/json): ActionItemRead
+- 422 (application/json): HTTPValidationError
+
 
 ### PUT /action-items/{item_id}/complete
-Complete action item.
+Complete Item
 
-Path parameters
-- item_id (integer, required)
+Parameters
+- item_id (integer, required, path)
 
 Responses
-- 200: ActionItemRead
-- 404: HTTPError
+- 200 (application/json): ActionItemRead
+- 422 (application/json): HTTPValidationError
+
+
+### GET /notes/
+List Notes
+
+Responses
+- 200 (application/json): array of NoteRead
+
+
+### POST /notes/
+Create Note
+
+Request body
+- Required
+- Content-Type: application/json
+- Schema: NoteCreate
+
+Responses
+- 201 (application/json): NoteRead
+- 422 (application/json): HTTPValidationError
+
+
+### GET /notes/search/
+Search Notes
+
+Parameters
+- q (object, optional, query)
+
+Responses
+- 200 (application/json): array of NoteRead
+- 422 (application/json): HTTPValidationError
+
+
+### GET /notes/{note_id}
+Get Note
+
+Parameters
+- note_id (integer, required, path)
+
+Responses
+- 200 (application/json): NoteRead
+- 422 (application/json): HTTPValidationError
+
+
+### DELETE /notes/{note_id}
+Delete Note
+
+Parameters
+- note_id (integer, required, path)
+
+Responses
+- 204: no body
+- 422 (application/json): HTTPValidationError
 
 ## Schemas
 
-### NoteCreate
-- title: string, required
-- content: string, required
-- additionalProperties: false
-
-### NoteRead
-- id: integer, required
-- title: string, required
-- content: string, required
-- additionalProperties: false
-
 ### ActionItemCreate
 - description: string, required
-- additionalProperties: false
 
 ### ActionItemRead
-- id: integer, required
-- description: string, required
 - completed: boolean, required
-- additionalProperties: false
+- description: string, required
+- id: integer, required
 
-### HTTPError
-- detail: string, required
-- additionalProperties: false
+### HTTPValidationError
+- detail: array of ValidationError, optional
+
+### NoteCreate
+- content: string, required
+- title: string, required
+
+### NoteRead
+- content: string, required
+- id: integer, required
+- title: string, required
+
+### ValidationError
+- loc: array of object, required
+- msg: string, required
+- type: string, required

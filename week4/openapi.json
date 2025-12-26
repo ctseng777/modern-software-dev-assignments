@@ -1,21 +1,20 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.1.0",
   "info": {
     "title": "Modern Software Dev Starter (Week 4)",
-    "version": "1.0.0"
+    "version": "0.1.0"
   },
   "paths": {
     "/": {
       "get": {
-        "summary": "Serve frontend",
+        "summary": "Root",
+        "operationId": "root__get",
         "responses": {
           "200": {
-            "description": "HTML page",
+            "description": "Successful Response",
             "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string"
-                }
+              "application/json": {
+                "schema": {}
               }
             }
           }
@@ -24,17 +23,22 @@
     },
     "/notes/": {
       "get": {
-        "summary": "List notes",
+        "tags": [
+          "notes"
+        ],
+        "summary": "List Notes",
+        "operationId": "list_notes_notes__get",
         "responses": {
           "200": {
-            "description": "Notes list",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/NoteRead"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Notes Notes  Get"
                 }
               }
             }
@@ -42,24 +46,38 @@
         }
       },
       "post": {
-        "summary": "Create note",
+        "tags": [
+          "notes"
+        ],
+        "summary": "Create Note",
+        "operationId": "create_note_notes__post",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/NoteCreate"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Created note",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoteRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -69,27 +87,50 @@
     },
     "/notes/search/": {
       "get": {
-        "summary": "Search notes",
+        "tags": [
+          "notes"
+        ],
+        "summary": "Search Notes",
+        "operationId": "search_notes_notes_search__get",
         "parameters": [
           {
             "name": "q",
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string"
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Notes list",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/NoteRead"
-                  }
+                  },
+                  "title": "Response Search Notes Notes Search  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -99,20 +140,25 @@
     },
     "/notes/{note_id}": {
       "get": {
-        "summary": "Get note",
+        "tags": [
+          "notes"
+        ],
+        "summary": "Get Note",
+        "operationId": "get_note_notes__note_id__get",
         "parameters": [
           {
             "name": "note_id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "title": "Note Id"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Note",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -121,12 +167,45 @@
               }
             }
           },
-          "404": {
-            "description": "Note not found",
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "notes"
+        ],
+        "summary": "Delete Note",
+        "operationId": "delete_note_notes__note_id__delete",
+        "parameters": [
+          {
+            "name": "note_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Note Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -136,17 +215,22 @@
     },
     "/action-items/": {
       "get": {
-        "summary": "List action items",
+        "tags": [
+          "action_items"
+        ],
+        "summary": "List Items",
+        "operationId": "list_items_action_items__get",
         "responses": {
           "200": {
-            "description": "Action items list",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ActionItemRead"
-                  }
+                  },
+                  "type": "array",
+                  "title": "Response List Items Action Items  Get"
                 }
               }
             }
@@ -154,24 +238,38 @@
         }
       },
       "post": {
-        "summary": "Create action item",
+        "tags": [
+          "action_items"
+        ],
+        "summary": "Create Item",
+        "operationId": "create_item_action_items__post",
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/ActionItemCreate"
               }
             }
-          }
+          },
+          "required": true
         },
         "responses": {
           "201": {
-            "description": "Created action item",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ActionItemRead"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -181,20 +279,25 @@
     },
     "/action-items/{item_id}/complete": {
       "put": {
-        "summary": "Complete action item",
+        "tags": [
+          "action_items"
+        ],
+        "summary": "Complete Item",
+        "operationId": "complete_item_action_items__item_id__complete_put",
         "parameters": [
           {
             "name": "item_id",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "title": "Item Id"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Updated action item",
+            "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
@@ -203,12 +306,12 @@
               }
             }
           },
-          "404": {
-            "description": "Action item not found",
+          "422": {
+            "description": "Validation Error",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HTTPError"
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -219,50 +322,128 @@
   },
   "components": {
     "schemas": {
-      "NoteCreate": {
-        "type": "object",
-        "properties": {
-          "title": {"type": "string"},
-          "content": {"type": "string"}
-        },
-        "required": ["title", "content"],
-        "additionalProperties": false
-      },
-      "NoteRead": {
-        "type": "object",
-        "properties": {
-          "id": {"type": "integer"},
-          "title": {"type": "string"},
-          "content": {"type": "string"}
-        },
-        "required": ["id", "title", "content"],
-        "additionalProperties": false
-      },
       "ActionItemCreate": {
-        "type": "object",
         "properties": {
-          "description": {"type": "string"}
+          "description": {
+            "type": "string",
+            "title": "Description"
+          }
         },
-        "required": ["description"],
-        "additionalProperties": false
+        "type": "object",
+        "required": [
+          "description"
+        ],
+        "title": "ActionItemCreate"
       },
       "ActionItemRead": {
-        "type": "object",
         "properties": {
-          "id": {"type": "integer"},
-          "description": {"type": "string"},
-          "completed": {"type": "boolean"}
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "completed": {
+            "type": "boolean",
+            "title": "Completed"
+          }
         },
-        "required": ["id", "description", "completed"],
-        "additionalProperties": false
+        "type": "object",
+        "required": [
+          "id",
+          "description",
+          "completed"
+        ],
+        "title": "ActionItemRead"
       },
-      "HTTPError": {
-        "type": "object",
+      "HTTPValidationError": {
         "properties": {
-          "detail": {"type": "string"}
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
         },
-        "required": ["detail"],
-        "additionalProperties": false
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "NoteCreate": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title",
+          "content"
+        ],
+        "title": "NoteCreate"
+      },
+      "NoteRead": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "content"
+        ],
+        "title": "NoteRead"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
       }
     }
   }
